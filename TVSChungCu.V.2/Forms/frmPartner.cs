@@ -62,8 +62,18 @@ namespace TVSMain
                 MessageBox.Show("Dữ liệu của bạn chưa có sự thay đổi!.", "TVS - Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            if (TVSSys.GlobalModule.objCon.EXEUpdate(sSQLQuery,objdata))
+            DataTable dt = objdata;
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                if (dt.Rows[i]["ContactPhone"].ToString() == null || dt.Rows[i]["ContactPhone"].ToString() == "")
+                {
+                    MessageBox.Show("Bạn phải nhập đủ số điện thoại.", "TVS - Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                if (dt.Rows[i]["CodePartner"].ToString() == null || dt.Rows[i]["CodePartner"].ToString() == "")
+                    dt.Rows[i]["CodePartner"] = dt.Rows[i]["ContactPhone"].ToString();
+            }
+            if (TVSSys.GlobalModule.objCon.EXEUpdate(sSQLQuery,dt))
             {
                 string sID = c1TrueDBGrid1.Columns[sTabID].CellValue(c1TrueDBGrid1.Row).ToString();
                 MessageBox.Show("Dữ liệu của bạn được cập nhật thành công.", "TVS - Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
